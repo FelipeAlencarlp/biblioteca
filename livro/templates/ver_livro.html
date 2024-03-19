@@ -3,26 +3,83 @@
 {% block 'titulo' %}Ver Livro{% endblock %}
 
 {% block 'conteudo' %}
-    <div style="text-align: center;" class="container">
-        <h1>{{ livro.nome }}</h1>
-        <h1>{{ livro.autor }}</h1>
-        <h1>{{ livro.co_autor }}</h1>
-        <h1>{{ livro.data_cadastro }}</h1>
-
-        <h1 style="display: inline;">Emprestado:</h1>
-        {% if livro.esprestado %}
-            <svg style="color: green; display: inline;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
-            </svg>
-
-        {% else %}
-            <svg style="color: red; display: inline;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-            </svg>
-        {% endif %}
-
+    <div class="container">
         <br>
-        <button>Ver histórico de empréstimo</button>
+
+        <form ation="#" method="POST">{% csrf_token %}
+            <p>
+                <label>Nome do livro</label>
+                <input class="form-control" type="text" value="{{ livro.nome }}" />
+            </p>
+
+            <p>
+                <label>Autor</label>
+                <input style="width: 40%;" class="form-control" type="text" value="{{ livro.autor }}" />
+            </p>
+
+            <p>
+                <label>Co-autor</label>
+                <input style="width: 40%;" class="form-control" type="text" value="{{ livro.co_autor }}" />
+            </p>
+
+            <p>
+                <label>Data de cadastro</label>
+                <input style="width: 40%;" class="form-control" type="text" value="{{ livro.data_cadastro }}" />
+            </p>
+
+            <label>Categoria</label>
+            <select style="width: 20%;" class="form-control" name="categoria">
+                {% for categoria in categoria_livro %}
+                    {% if livro.categoria == categoria %}
+                        <option selected>{{ categoria }}</option>
+                    {% else %}
+                        <option>{{ categoria }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+
+            <br>
+
+            <label>Emprestado: &nbsp; &nbsp;</label>
+            {% if livro.emprestado %}
+                <input style="transform: scale(2.0);" checked type="checkbox" />
+
+            {% else %}
+                <input style="transform: scale(2.0);" type="checkbox" />
+            {% endif %}
+
+            <br>
+            <br>
+            <input type="submit" class="btn btn-success btn-lg" value="Salvar" />
+        </form>
+
+        <hr>
+
+        <h2>Histórico de emprestimo</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Data emprestimo</th>
+                <th scope="col">Data devolução</th>
+                <th scope="col">Tempo duração</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emprestimo in emprestimos %}
+                    <tr>
+                        {% if emprestimo.nome_emprestado_anonimo == "" %}
+                            <th scope="row">{{ emprestimo.nome_emprestado }}</th>
+                        {% else %}
+                            <th scope="row">{{ emprestimo.nome_emprestado_anonimo }}</th>
+                        {% endif %}
+                        <td>{{ emprestimo.data_emprestimo }}</td>
+                        <td>{{ emprestimo.data_devolucao }}</td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
 {% endblock %}
