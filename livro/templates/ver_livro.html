@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load filtros %} {% comment "Carrega o arquivo filtros" %}{% endcomment %}
+
 {% block 'titulo' %}Ver Livro{% endblock %}
 
 {% block 'conteudo' %}
@@ -75,7 +77,7 @@
                         {% endif %}
                         <td>{{ emprestimo.data_emprestimo }}</td>
                         <td>{{ emprestimo.data_devolucao }}</td>
-                        <td></td>
+                        <td>{{ emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo }} dias</td>
                     </tr>
                 {% endfor %}
             </tbody>
