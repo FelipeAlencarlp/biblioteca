@@ -17,7 +17,7 @@
             <a class="navbar-brand text-white" href="{% url 'home' %}">Biblioteca</a>
             {% if usuario_logado %}
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Cadastrar livro
+                    Cadastrar
                 </button>
                 <a class="btn btn-danger" href="{% url 'logout' %}" >Sair</a>
             {% endif %}
@@ -34,19 +34,76 @@
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastre um livro</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <form action="{% url 'cadastrar_livro' %}" method="POST">{% csrf_token %}
-                            <table>
-                                {{ form.as_table }}
-                            </table>
 
-                            <input type="submit" class="btn btn-success" value="Cadastrar" />
-                        </form>
+                    <div class="modal-body">
+                        <button onclick="mostrar_form(1)" class="btn btn-info">Categoria</button>
+                        <button onclick="mostrar_form(2)" class="btn btn-warning">Livro</button>
+                        <button onclick="mostrar_form(3)" class="btn btn-primary">Emprestimo</button>
+                        <br>
+                        <br>
+
+                        <div style="display: none;" id="categoria">
+                            <form action="{% url 'cadastrar_categoria' %}" method="POST">{% csrf_token %}
+                                <table>
+                                    {{ form_categoria.as_table }}
+                                </table>
+                                <br>
+    
+                                <input type="hidden" name="usuario" value="{{ usuario_logado }}" />
+                                <input type="submit" class="btn btn-success" value="Cadastrar" />
+                            </form>
+                        </div>
+
+                        <div style="display: none;" id="livro">
+                            <form action="{% url 'cadastrar_livro' %}" method="POST">{% csrf_token %}
+                                <table>
+                                    {{ form.as_table }}
+                                </table>
+                                <br>
+
+                                <input type="submit" class="btn btn-success" value="Cadastrar" />
+                            </form>
+                        </div>
+
+                        <div style="display: none;" id="emprestimo">
+                            <form action="{% url 'cadastrar_emprestimo' %}" method="POST">{% csrf_token %}
+                                <table>
+                                    {{ form_emprestimo.as_table }}
+                                </table>
+                                <br>
+    
+                                <input type="submit" class="btn btn-success" value="Cadastrar" />
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     {% endif %}
+
+    <script>
+        function mostrar_form(value) {
+            categoria = document.getElementById('categoria');
+            livro = document.getElementById('livro');
+            emprestimo = document.getElementById('emprestimo');
+
+            if(value == 1) {
+                categoria.style.display = 'block';
+                livro.style.display = 'none';
+                emprestimo.style.display = 'none';
+
+            } else if(value == 2) {
+                livro.style.display = 'block';
+                categoria.style.display = 'none';
+                emprestimo.style.display = 'none';
+
+            } else if(value == 3) {
+                emprestimo.style.display = 'block';
+                categoria.style.display = 'none';
+                livro.style.display = 'none';
+            }
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     

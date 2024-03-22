@@ -5,6 +5,17 @@
 {% block 'conteudo' %}
     <div class="container">
         <br>
+        {% if status_categoria == '1' %}
+            <div class="alert alert-success" role="alert">
+                Categoria cadastrada com sucesso!
+            </div>
+        {% endif %}
+
+        {% if status_emprestimo == '1' %}
+            <div class="alert alert-success" role="alert">
+                Emprestimo cadastrado com sucesso!
+            </div>
+        {% endif %}
 
         <div class="row">
 

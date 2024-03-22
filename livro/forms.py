@@ -1,5 +1,5 @@
 from django import forms
-from .models import Livros
+from .models import Livros, Categoria, Emprestimos
 
 class CadastroLivro(forms.ModelForm):
     class Meta:
@@ -12,3 +12,17 @@ class CadastroLivro(forms.ModelForm):
         # campos que não serão exibidos para o usuário
         self.fields['usuario'].widget = forms.HiddenInput()
         self.fields['slug'].widget = forms.HiddenInput()
+
+
+class CategoriaLivro(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = "__all__"
+        exclude = ["usuario"]
+
+
+class EmprestimoLivro(forms.ModelForm):
+    class Meta:
+        model = Emprestimos
+        fields = "__all__"
+        exclude = ["data_devolucao", "data_emprestimo"]

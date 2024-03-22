@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import date
+import datetime
 from usuarios.models import Usuario
 from django.utils.text import slugify
 
@@ -36,11 +37,18 @@ class Livros(models.Model):
 
 
 class Emprestimos(models.Model):
+    choices = (
+        ('P', 'Péssimo'),
+        ('R', 'Ruim'),
+        ('B', 'Bom'),
+        ('O', 'Ótimo')
+    )
     nome_emprestado = models.ForeignKey(Usuario, on_delete = models.DO_NOTHING, blank = True, null = True)
     nome_emprestado_anonimo = models.CharField(max_length = 30, blank = True)
-    data_emprestimo = models.DateField(blank = True, null = True)
+    data_emprestimo = models.DateField(default = datetime.datetime.now())
     data_devolucao = models.DateField(blank = True, null = True)
     livro = models.ForeignKey(Livros, on_delete = models.DO_NOTHING)
+    avaliacao = models.CharField(max_length = 1, choices = choices, blank = True, null = True)
 
     def __str__(self) -> str:
         return f'{self.nome_emprestado} | {self.livro}'

@@ -5,6 +5,22 @@
 {% block 'titulo' %}Ver Livro{% endblock %}
 
 {% block 'conteudo' %}
+
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Deseja realmente excluir?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <a class="btn btn-danger" href="{% url 'excluir_livro' slug_livro %}">Excluir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <br>
 
@@ -54,6 +70,12 @@
             <br>
             <input type="submit" class="btn btn-success btn-lg" value="Salvar" />
         </form>
+
+        <br>
+
+        <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+            Excluir
+        </button>
 
         <hr>
 
