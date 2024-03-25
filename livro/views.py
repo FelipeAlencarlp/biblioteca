@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from usuarios.models import Usuario
 from .models import Livros, Categoria, Emprestimos
-from .forms import CadastroLivro, CategoriaLivro, EmprestimoLivro
+from .forms import CadastroLivro, CategoriaLivro
 
 def home(request):
     if request.session.get('usuario'):
@@ -12,7 +12,9 @@ def home(request):
         livros = Livros.objects.filter(usuario = usuario)
         form = CadastroLivro()
         form_categoria = CategoriaLivro()
-        form_emprestimo = EmprestimoLivro()
+
+        usuarios = Usuario.objects.all()
+        livros_emprestar = Livros.objects.filter(usuario = usuario).filter(emprestado = False)
 
         # relaciona os campos com o usuário que está logado
         form.fields['usuario'].initial = request.session['usuario']
@@ -22,9 +24,10 @@ def home(request):
                                              'usuario_logado': request.session.get('usuario'),
                                              'form': form,
                                              'form_categoria': form_categoria,
-                                             'form_emprestimo': form_emprestimo,
                                              'status_categoria': status_categoria,
-                                             'status_emprestimo': status_emprestimo})
+                                             'status_emprestimo': status_emprestimo,
+                                             'usuarios': usuarios,
+                                             'livros_emprestar': livros_emprestar})
 
     return redirect('/auth/login/?status=2')
 
@@ -39,7 +42,10 @@ def ver_livro(request, slug):
             emprestimos = Emprestimos.objects.filter(livro = livro)
             form = CadastroLivro()
             form_categoria = CategoriaLivro()
-            form_emprestimo = EmprestimoLivro()
+
+            usuarios = Usuario.objects.all()
+            livros = Livros.objects.filter(usuario_id = request.session.get('usuario'))
+            livros_emprestar = Livros.objects.filter(usuario = usuario).filter(emprestado = False)
 
             # relaciona os campos com o usuário que está logado
             form.fields['usuario'].initial = request.session['usuario']
@@ -51,7 +57,9 @@ def ver_livro(request, slug):
                                                       'form': form,
                                                       'slug_livro': slug,
                                                       'form_categoria': form_categoria,
-                                                      'form_emprestimo': form_emprestimo})
+                                                      'usuarios': usuarios,
+                                                      'livros': livros,
+                                                      'livros_emprestar': livros_emprestar})
         
         return HttpResponse('Esse livro não é seu')
     
@@ -90,14 +98,27 @@ def cadastrar_categoria(request):
 
 def cadastrar_emprestimo(request):
     if request.method == "POST":
-        form = EmprestimoLivro(request.POST)
-        
-        if form.is_valid:
-            form.save()
+        nome_emprestado = request.POST.get('nome_emprestado')
+        nome_emprestado_anonimo = request.POST.get('nome_emprestado_anonimo')
+        livro_emprestado = request.POST.get('livro_emprestado')
 
-            return redirect('/livro/home/?cadastro_emprestimo=1')
-        
-        return HttpResponse('Dados inválidos!')
+        if nome_emprestado_anonimo:
+            emprestimo = Emprestimos(nome_emprestado_anonimo = nome_emprestado_anonimo,
+                                 livro_id = livro_emprestado)
+            
+        else:
+            emprestimo = Emprestimos(nome_emprestado_id = nome_emprestado,
+                                     livro_id = livro_emprestado)
+
+        emprestimo.save()
+
+        livro = Livros.objects.get(id = livro_emprestado)
+        livro.emprestado = True
+        livro.save()
+
+        return redirect('/livro/home/?cadastro_emprestimo=1')
+    
+    return HttpResponse('Impossível cadastrar!')
 
 
 def excluir_livro(request, slug):

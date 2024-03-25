@@ -19,10 +19,3 @@ class CategoriaLivro(forms.ModelForm):
         model = Categoria
         fields = "__all__"
         exclude = ["usuario"]
-
-
-class EmprestimoLivro(forms.ModelForm):
-    class Meta:
-        model = Emprestimos
-        fields = "__all__"
-        exclude = ["data_devolucao", "data_emprestimo"]

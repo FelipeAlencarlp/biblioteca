@@ -18,7 +18,7 @@ class Livros(models.Model):
     autor = models.CharField(max_length = 30)
     co_autor = models.CharField(max_length = 30, blank = True)
     data_cadastro = models.DateField(default = date.today)
-    emprestado = models.BooleanField(default = False)
+    emprestado = models.BooleanField()
     categoria = models.ForeignKey(Categoria, on_delete = models.DO_NOTHING)
     usuario = models.ForeignKey(Usuario, on_delete = models.DO_NOTHING)
     slug = models.SlugField(unique=True, blank=True, null=True)
@@ -50,5 +50,8 @@ class Emprestimos(models.Model):
     livro = models.ForeignKey(Livros, on_delete = models.DO_NOTHING)
     avaliacao = models.CharField(max_length = 1, choices = choices, blank = True, null = True)
 
+    class Meta:
+        verbose_name = 'Emprestimo'
+
     def __str__(self) -> str:
-        return f'{self.nome_emprestado} | {self.livro}'
+        return f'{self.nome_emprestado or self.nome_emprestado_anonimo} | {self.livro}'

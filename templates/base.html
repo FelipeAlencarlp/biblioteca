@@ -66,13 +66,30 @@
                         </div>
 
                         <div style="display: none;" id="emprestimo">
-                            <form action="{% url 'cadastrar_emprestimo' %}" method="POST">{% csrf_token %}
-                                <table>
-                                    {{ form_emprestimo.as_table }}
-                                </table>
+                            <button onclick="exibe_input_emprestado(1)" class="btn btn-dark">Usuário Anónimo</button>
+                            <button onclick="exibe_input_emprestado(2)" class="btn btn-light">Usuário Existente</button>
+                            <br>
+                            <br>
+
+                            <form id="form_emprestimo" action="{% url 'cadastrar_emprestimo' %}" method="POST">{% csrf_token %}
+                                <select id="nome_emprestado" class="form-select" name="nome_emprestado">
+                                    {% for usuario in usuarios %}
+                                        <option value="{{ usuario.id }}">{{ usuario.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+
+                                <input id="nome_emprestado_anonimo" class="form-control" name="nome_emprestado_anonimo" type="text" placeholder="Digite o nome para quem emprestou" style="display: none;" />
+                                <br>
+
+                                <select class="form-select" name="livro_emprestado">
+                                    {% for livro in livros_emprestar %}
+                                        <option value="{{ livro.id }}">{{ livro.nome }}</option>
+                                    {% endfor %}
+                                </select>
                                 <br>
     
-                                <input type="submit" class="btn btn-success" value="Cadastrar" />
+                                <input type="submit" class="btn btn-success" value="Emprestar" />
                             </form>
                         </div>
                     </div>
@@ -101,6 +118,17 @@
                 emprestimo.style.display = 'block';
                 categoria.style.display = 'none';
                 livro.style.display = 'none';
+            }
+        }
+
+        function exibe_input_emprestado(value) {
+            if(value == 1) {
+                document.getElementById('nome_emprestado').style.display = 'none';
+                document.getElementById('nome_emprestado_anonimo').style.display = 'block';
+
+            } else {
+                document.getElementById('nome_emprestado').style.display = 'block';
+                document.getElementById('nome_emprestado_anonimo').style.display = 'none';
             }
         }
     </script>
