@@ -15,11 +15,24 @@
     <nav class="navbar navbar-expand-lg bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand text-white" href="{% url 'home' %}">Biblioteca</a>
+            
             {% if usuario_logado %}
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Cadastrar
-                </button>
-                <a class="btn btn-danger" href="{% url 'logout' %}" >Sair</a>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Menu
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li>
+                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Cadastrar
+                            </button>
+                        </li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Sair</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><p class="dropdown-item">Livros: {{ total_livros }}</p></li>
+                    </ul>
+                </div>
+                
             {% endif %}
         </div>
     </nav>
@@ -39,6 +52,7 @@
                         <button onclick="mostrar_form(1)" class="btn btn-info">Categoria</button>
                         <button onclick="mostrar_form(2)" class="btn btn-warning">Livro</button>
                         <button onclick="mostrar_form(3)" class="btn btn-primary">Emprestimo</button>
+                        <button onclick="mostrar_form(4)" class="btn btn-danger">Devolução</button>
                         <br>
                         <br>
 
@@ -92,6 +106,19 @@
                                 <input type="submit" class="btn btn-success" value="Emprestar" />
                             </form>
                         </div>
+
+                        <div style="display: none;" id="devolucao">
+                            <form action="{% url 'devolver_livro' %}" method="POST">{% csrf_token %}
+                                <select class="form-select" name="id_livro_devolver">
+                                    {% for livro in livros_emprestados %}
+                                        <option value="{{ livro.id }}">{{ livro.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+
+                                <input class="btn btn-success" type="submit" value="Devolver" />
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -103,21 +130,31 @@
             categoria = document.getElementById('categoria');
             livro = document.getElementById('livro');
             emprestimo = document.getElementById('emprestimo');
+            devolucao = document.getElementById('devolucao');
 
             if(value == 1) {
                 categoria.style.display = 'block';
                 livro.style.display = 'none';
                 emprestimo.style.display = 'none';
+                devolucao.style.display = 'none';
 
             } else if(value == 2) {
                 livro.style.display = 'block';
                 categoria.style.display = 'none';
                 emprestimo.style.display = 'none';
+                devolucao.style.display = 'none';
 
             } else if(value == 3) {
                 emprestimo.style.display = 'block';
                 categoria.style.display = 'none';
                 livro.style.display = 'none';
+                devolucao.style.display = 'none';
+
+            } else if(value == 4) {
+                emprestimo.style.display = 'none';
+                categoria.style.display = 'none';
+                livro.style.display = 'none';
+                devolucao.style.display = 'block';
             }
         }
 

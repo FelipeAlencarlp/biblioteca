@@ -1,20 +1,25 @@
+from datetime import datetime
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from usuarios.models import Usuario
 from .models import Livros, Categoria, Emprestimos
 from .forms import CadastroLivro, CategoriaLivro
+from django.db.models import Q
 
 def home(request):
     if request.session.get('usuario'):
         usuario = Usuario.objects.get(id = request.session['usuario']).id
         status_categoria = request.GET.get('cadastro_categoria')
         status_emprestimo = request.GET.get('cadastro_emprestimo')
+        status_devolucao = request.GET.get('devolver_livro')
         livros = Livros.objects.filter(usuario = usuario)
+        total_livros = livros.count()
         form = CadastroLivro()
         form_categoria = CategoriaLivro()
 
         usuarios = Usuario.objects.all()
         livros_emprestar = Livros.objects.filter(usuario = usuario).filter(emprestado = False)
+        livros_emprestados = Livros.objects.filter(usuario = usuario).filter(emprestado = True)
 
         # relaciona os campos com o usuário que está logado
         form.fields['usuario'].initial = request.session['usuario']
@@ -26,8 +31,11 @@ def home(request):
                                              'form_categoria': form_categoria,
                                              'status_categoria': status_categoria,
                                              'status_emprestimo': status_emprestimo,
+                                             'status_devolucao': status_devolucao,
                                              'usuarios': usuarios,
-                                             'livros_emprestar': livros_emprestar})
+                                             'livros_emprestar': livros_emprestar,
+                                             'total_livros': total_livros,
+                                             'livros_emprestados': livros_emprestados})
 
     return redirect('/auth/login/?status=2')
 
@@ -46,6 +54,7 @@ def ver_livro(request, slug):
             usuarios = Usuario.objects.all()
             livros = Livros.objects.filter(usuario_id = request.session.get('usuario'))
             livros_emprestar = Livros.objects.filter(usuario = usuario).filter(emprestado = False)
+            livros_emprestados = Livros.objects.filter(usuario = usuario).filter(emprestado = True)
 
             # relaciona os campos com o usuário que está logado
             form.fields['usuario'].initial = request.session['usuario']
@@ -59,7 +68,8 @@ def ver_livro(request, slug):
                                                       'form_categoria': form_categoria,
                                                       'usuarios': usuarios,
                                                       'livros': livros,
-                                                      'livros_emprestar': livros_emprestar})
+                                                      'livros_emprestar': livros_emprestar,
+                                                      'livros_emprestados': livros_emprestados})
         
         return HttpResponse('Esse livro não é seu')
     
@@ -119,6 +129,19 @@ def cadastrar_emprestimo(request):
         return redirect('/livro/home/?cadastro_emprestimo=1')
     
     return HttpResponse('Impossível cadastrar!')
+
+
+def devolver_livro(request):
+    id = request.POST.get('id_livro_devolver')
+    livro_devolver = Livros.objects.get(id = id)
+    livro_devolver.emprestado = False
+    livro_devolver.save()
+
+    emprestimo_devolver = Emprestimos.objects.get(Q(livro = livro_devolver) & Q(data_devolucao = None)) # traz um único livro com esses requisitos
+    emprestimo_devolver.data_devolucao = datetime.now()
+    emprestimo_devolver.save()
+
+    return redirect('/livro/home/?devolver_livro=1')
 
 
 def excluir_livro(request, slug):

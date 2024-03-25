@@ -99,7 +99,7 @@
                         {% endif %}
                         <td>{{ emprestimo.data_emprestimo }}</td>
                         <td>{{ emprestimo.data_devolucao }}</td>
-                        <td>{{ emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo }} dias</td>
+                        <td>{{ emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

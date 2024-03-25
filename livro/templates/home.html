@@ -17,6 +17,12 @@
             </div>
         {% endif %}
 
+        {% if status_devolucao == '1' %}
+            <div class="alert alert-success" role="alert">
+                Livro devolvido com sucesso!
+            </div>
+        {% endif %}
+
         <div class="row">
 
             {% for livro in livros %}
