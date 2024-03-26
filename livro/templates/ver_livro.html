@@ -24,46 +24,52 @@
     <div class="container">
         <br>
 
-        <form ation="#" method="POST">{% csrf_token %}
+        <form ation="{% url 'alterar_livro' %}" method="POST">{% csrf_token %}
+            <input type="hidden" value="{{ livro.slug }}" name="livro_slug" />
             <p>
                 <label>Nome do livro</label>
-                <input class="form-control" type="text" value="{{ livro.nome }}" />
+                <input class="form-control" type="text" value="{{ livro.nome }}" name="nome_livro" />
             </p>
 
             <p>
                 <label>Autor</label>
-                <input style="width: 40%;" class="form-control" type="text" value="{{ livro.autor }}" />
+                <input style="width: 40%;" class="form-control" type="text" value="{{ livro.autor }}" name="autor" />
             </p>
 
             <p>
                 <label>Co-autor</label>
-                <input style="width: 40%;" class="form-control" type="text" value="{{ livro.co_autor }}" />
-            </p>
-
-            <p>
-                <label>Data de cadastro</label>
-                <input style="width: 40%;" class="form-control" type="text" value="{{ livro.data_cadastro }}" />
+                <input style="width: 40%;" class="form-control" type="text" value="{{ livro.co_autor }}" name="co_autor" />
             </p>
 
             <label>Categoria</label>
-            <select style="width: 20%;" class="form-control" name="categoria">
+            <select style="width: 20%;" class="form-select" name="categoria_id">
                 {% for categoria in categoria_livro %}
                     {% if livro.categoria == categoria %}
-                        <option selected>{{ categoria }}</option>
+                        <option value="{{ categoria.id }}" selected>{{ categoria }}</option>
                     {% else %}
-                        <option>{{ categoria }}</option>
+                        <option value="{{ categoria.id }}">{{ categoria }}</option>
                     {% endif %}
                 {% endfor %}
             </select>
 
+            </br>
+
+            <label style="display: inline;">Data de cadastro:</label>
+            <p style="display: inline;">{{ livro.data_cadastro }}</p>
+
+            <br>
             <br>
 
-            <label>Emprestado: &nbsp; &nbsp;</label>
+            <label>Emprestado:</label>
             {% if livro.emprestado %}
-                <input style="transform: scale(2.0);" checked type="checkbox" />
+                <svg style="color: green; display: inline;" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                </svg>
 
             {% else %}
-                <input style="transform: scale(2.0);" type="checkbox" />
+                <svg style="color: red; display: inline;" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                </svg>
             {% endif %}
 
             <br>

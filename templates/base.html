@@ -24,9 +24,10 @@
                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                         <li>
                             <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                Cadastrar
+                                Opções
                             </button>
                         </li>
+                        <li><a class="dropdown-item" href="{% url 'peguei_emprestado' %}">Peguei emprestado</a></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}">Sair</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><p class="dropdown-item">Livros: {{ total_livros }}</p></li>
@@ -44,7 +45,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastre um livro</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar | Emprestar | Devolver</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 

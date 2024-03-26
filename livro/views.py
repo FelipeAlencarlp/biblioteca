@@ -144,6 +144,36 @@ def devolver_livro(request):
     return redirect('/livro/home/?devolver_livro=1')
 
 
+def alterar_livro(request):
+    livro_slug = request.POST.get('livro_slug')
+    nome_livro = request.POST.get('nome_livro')
+    autor = request.POST.get('autor')
+    co_autor = request.POST.get('co_autor')
+    categoria_id = request.POST.get('categoria_id')
+
+    livro = Livros.objects.get(slug = livro_slug)
+    categoria = Categoria.objects.get(id = categoria_id)
+    
+    if livro.usuario.id == request.session['usuario']:
+        livro.nome = nome_livro
+        livro.autor = autor
+        livro.co_autor = co_autor
+        livro.categoria = categoria
+        livro.save()
+
+        return redirect(f'/livro/ver_livro/{livro_slug}')
+    
+    return HttpResponse('Esse livro não é seu!')
+
+
+def peguei_emprestado(request):
+    usuario = Usuario.objects.get(id = request.session['usuario'])
+    emprestimos = Emprestimos.objects.filter(nome_emprestado = usuario)
+
+    return render(request, 'peguei_emprestado.html', {'usuario_logado': request.session['usuario'],
+                                                      'emprestimos': emprestimos})
+
+
 def excluir_livro(request, slug):
     livro = Livros.objects.get(slug = slug).delete()
 
