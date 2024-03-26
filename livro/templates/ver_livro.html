@@ -25,7 +25,7 @@
         <br>
 
         <form ation="{% url 'alterar_livro' %}" method="POST">{% csrf_token %}
-            <input type="hidden" value="{{ livro.slug }}" name="livro_slug" />
+            <input type="hidden" value="{{ slug_livro }}" name="slug_livro" />
             <p>
                 <label>Nome do livro</label>
                 <input class="form-control" type="text" value="{{ livro.nome }}" name="nome_livro" />
@@ -93,6 +93,7 @@
                 <th scope="col">Data emprestimo</th>
                 <th scope="col">Data devolução</th>
                 <th scope="col">Tempo duração</th>
+                <th scope="col">Avaliação</th>
                 </tr>
             </thead>
             <tbody>
@@ -106,10 +107,61 @@
                         <td>{{ emprestimo.data_emprestimo }}</td>
                         <td>{{ emprestimo.data_devolucao }}</td>
                         <td>{{ emprestimo.data_devolucao|mostra_duracao:emprestimo.data_emprestimo }}</td>
+                        <td>
+                            {% if emprestimo.avaliacao == None %}
+                                <button
+                                    onclick="avaliacao({{ emprestimo.id }})"
+                                    class="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal3"
+                                >
+                                    AVALIAÇÃO
+                                </button>
+                            {% else %}
+                                {{ emprestimo.avaliacao }}
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <br>
     </div>
+
+    <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel3">Avaliar empréstimo</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="{% url 'processa_avaliacao' %}" method="POST">{% csrf_token %}
+                <input id="id_livro" type="hidden" value="{{ slug_livro }}" name="slug_livro" />
+                <input id="id_emprestimo" type="hidden" name="id_emprestimo" />
+
+                <select class="form-select" name="opcoes">
+                    <option value="P">Péssimo</option>
+                    <option value="R">Ruim</option>
+                    <option value="B">Bom</option>
+                    <option value="O">Ótimo</option>
+                </select>
+                <br>
+
+                <input class="btn btn-info" type="submit" value="Avaliar" />
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+
+        function avaliacao(id_emprestimo) {
+            input_emprestimo = document.getElementById('id_emprestimo')
+            input_emprestimo.value = id_emprestimo
+        }
+
+      </script>
 
 {% endblock %}

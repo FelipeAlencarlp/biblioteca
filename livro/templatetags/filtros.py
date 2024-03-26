@@ -11,6 +11,6 @@ def mostra_duracao(value1, value2):
         texto = 'dias'
         if dias == 1:
             texto = 'dia'
-        return f"{dias} {texto}"
+        return (f"{dias} {texto}")
     
     return "Ainda não foi devolvido."
