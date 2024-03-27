@@ -180,10 +180,14 @@ def processa_avaliacao(request):
     opcoes = request.POST.get('opcoes')
 
     emprestimo = Emprestimos.objects.get(id = id_emprestimo)
-    emprestimo.avaliacao = opcoes
-    emprestimo.save()
 
-    return redirect(f'/livro/ver_livro/{slug_livro}')
+    if emprestimo.livro.usuario.id == request.session['usuario']:
+        emprestimo.avaliacao = opcoes
+        emprestimo.save()
+
+        return redirect(f'/livro/ver_livro/{slug_livro}')
+    
+    return HttpResponse('Esse empréstimo não é seu!')
 
 
 def excluir_livro(request, slug):
