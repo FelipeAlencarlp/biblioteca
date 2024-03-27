@@ -78,7 +78,7 @@ def ver_livro(request, slug):
 
 def cadastrar_livro(request):
     if request.method == "POST":
-        form = CadastroLivro(request.POST)
+        form = CadastroLivro(request.POST, request.FILES)
         
         if form.is_valid:
             form.save()
@@ -169,9 +169,17 @@ def alterar_livro(request):
 def peguei_emprestado(request):
     usuario = Usuario.objects.get(id = request.session['usuario'])
     emprestimos = Emprestimos.objects.filter(nome_emprestado = usuario)
+    form = CadastroLivro()
+    form_categoria = CategoriaLivro()
+
+    form.fields['usuario'].initial = request.session['usuario']
+    form.fields['categoria'].queryset = Categoria.objects.filter(usuario = usuario)
+
 
     return render(request, 'peguei_emprestado.html', {'usuario_logado': request.session['usuario'],
-                                                      'emprestimos': emprestimos})
+                                                      'emprestimos': emprestimos,
+                                                      'form': form,
+                                                      'form_categoria': form_categoria})
 
 
 def processa_avaliacao(request):

@@ -70,7 +70,7 @@
                         </div>
 
                         <div style="display: none;" id="livro">
-                            <form action="{% url 'cadastrar_livro' %}" method="POST">{% csrf_token %}
+                            <form action="{% url 'cadastrar_livro' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
                                 <table>
                                     {{ form.as_table }}
                                 </table>

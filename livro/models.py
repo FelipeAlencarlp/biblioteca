@@ -48,7 +48,7 @@ class Emprestimos(models.Model):
     nome_emprestado_anonimo = models.CharField(max_length = 30, blank = True)
     data_emprestimo = models.DateField(default = datetime.datetime.now)
     data_devolucao = models.DateField(blank = True, null = True)
-    livro = models.ForeignKey(Livros, on_delete = models.DO_NOTHING)
+    livro = models.ForeignKey(Livros, on_delete = models.CASCADE)
     avaliacao = models.CharField(max_length = 1, choices = choices, blank = True, null = True)
 
     class Meta:
